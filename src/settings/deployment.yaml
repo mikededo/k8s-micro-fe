@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: apps-settings
+  namespace: monorepo-nmspc
 spec:
   replicas: 1
   selector:
@@ -18,3 +19,17 @@ spec:
           imagePullPolicy: Never
           ports:
             - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: apps-settings-service
+  namespace: monorepo-nmspc
+spec:
+  selector:
+    app: settings
+  ports:
+    - name: default
+      protocol: TCP
+      port: 8080
+      targetPort: 80
