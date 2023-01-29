@@ -1,0 +1,41 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-ingress
+  namespace: monorepo-nmspc
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: localhost # Make sure to update /etc/hosts
+      http:
+        paths:
+          - path: /
+            pathType: Exact
+            backend:
+              service:
+                name: apps-home-service
+                port:
+                  number: 8080
+          - path: /home
+            pathType: Prefix
+            backend:
+              service:
+                name: apps-home-service
+                port:
+                  number: 8080
+          - path: /settings
+            pathType: Prefix
+            backend:
+              service:
+                name: apps-settings-service
+                port:
+                  number: 8080
+          - path: /user
+            pathType: Prefix
+            backend:
+              service:
+                name: apps-user-service
+                port:
+                  number: 8080
