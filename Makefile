@@ -18,7 +18,7 @@ define _deploy
 endef
 
 define _delete
-	@kubectl delete -n default deployment $(1)
+	@kubectl delete -n monorepo-nmspc deployment $(1)
 endef
 
 ## COMANDS
@@ -26,6 +26,10 @@ endef
 .PHONY: minikube-setup
 minikube-setup: ## Sets the environment variables so that local images can be used
 	eval $(minikube docker-env)
+
+.PHONY: change-ctx
+change-ctx: ## Changes the kubectl context so that it matches the wanted namespace
+	kubectl config set-context --current --namespace monorepo-nmspc
 
 .PHONY: build
 build: ## Generates the docker image for the target app
@@ -39,3 +43,16 @@ deploy: ## Deploys the target deployment
 delete: ## Deletes the target deployment
 	$(call _delete, apps-$(target))
 
+## GROUP COMMANDS
+
+.PHONE: build-all
+build-all: ## Builds all the deployments (home, settings, user)
+	@for i in home settings user; do make build target="$$i"; done
+
+.PHONE: deploy-all
+deploy-all: ## Deploys all the deployments (home, settings, user)
+	@for i in home settings user; do make deploy target="$$i"; done
+
+.PHONE: delete-all
+delete-all: ## Deletes all the deployments (home, settings, user)
+	@for i in home settings user; do make delete target="$$i"; done
