@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apps-settings
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: settings
+  template:
+    metadata:
+      labels:
+        app: settings
+    spec:
+      containers:
+        - name: app-settings
+          image: app-settings
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80
