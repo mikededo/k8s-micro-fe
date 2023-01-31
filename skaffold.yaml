@@ -1,0 +1,30 @@
+apiVersion: skaffold/v2beta22
+kind: Config
+
+build:
+  artifacts:
+    - image: app-home
+      context: src/home
+    - image: app-settings
+      context: src/settings
+    - image: app-user
+      context: src/user
+
+deploy:
+  kubectl:
+    defaultNamespace: monorepo-nmspc
+    manifests:
+      - manifests/*
+      - src/home/*
+      - src/settings/*
+      - src/user/*
+      - src/*
+  helm:
+    releases:
+      - name: ingress-nginx
+        remoteChart: ingress-nginx
+        repo: https://kubernetes.github.io/ingress-nginx
+        namespace: ingress-nginx
+        createNamespace: true
+        version: 4.0.6
+

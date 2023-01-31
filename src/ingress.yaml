@@ -2,16 +2,18 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: app-ingress
-  namespace: monorepo-nmspc
   annotations:
+#    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-passthrough: 'true'
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx
   rules:
-    - http:
+    - host: foo.bar
+      http:
         paths:
-          - path: /home/
-            pathType: Exact
+          - path: /home
+            pathType: Prefix
             backend:
               service:
                 name: apps-home-service
