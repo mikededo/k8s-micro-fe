@@ -1,0 +1,59 @@
+apiVersion: skaffold/v2beta29
+kind: Config
+metadata:
+  name: ks-micro-fe
+build:
+  local:
+    concurrency: 2
+  artifacts:
+  - image: app-home
+    context: src/home
+    docker:
+      dockerfile: Dockerfile
+      target:
+  - image: app-settings
+    context: src/settings
+    docker:
+      dockerfile: Dockerfile
+  - image: app-user
+    context: src/user
+    docker:
+      dockerfile: Dockerfile
+deploy:
+  kubectl:
+    defaultNamespace: monorepo-nmspc
+    flags:
+      apply:
+        - --force
+    manifests:
+    - manifests/namespace.yml
+    - src/home/deployment.yaml
+    - src/settings/deployment.yaml
+    - src/user/deployment.yaml
+    - src/ingress.yaml
+# Use static deployment for faster deverlopment loop
+#    - https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+  helm:
+    releases:
+      - name: ingress-nginx
+        remoteChart: ingress-nginx
+        repo: https://kubernetes.github.io/ingress-nginx
+        namespace: ingress-nginx
+        createNamespace: true
+        version: 4.0.19
+
+profiles:
+  # Profile used when running kind locally:
+  # - Applies patches for static file https://github.com/kubernetes/ingress-nginx/commit/c85765a015ea6709d161eccd42ef6134981c04b4
+  - name: local-kind
+    activation:
+      - kubeContext: kind
+    build:
+      local:
+        push: false
+    patches:
+      - op: add
+        path: /deploy/helm/releases/0/valuesFiles
+        # Required to make certain resources work on KinD (e.g. ingress-nginx)
+        value:
+          - skaffold-kind-ingress-nginx-values.yaml

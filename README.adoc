@@ -1,0 +1,32 @@
+= Micro-frontends Ingress deployment example
+:k: kubectl
+
+== Requirements
+
+* https://skaffold.dev/[skaffold]
+* [https://kind.sigs.k8s.io/]KinD
+* Docker
+
+== How to run
+
+From root directory
+
+. Run build and deployment with skaffold
+
+ skaffold dev
++
+This should start the deployment, validate that
+
+* `ingress-nginx-controller` pod up & running (`{k} get po -n ingress-nginx)
+* `monorepo-nmspc` namespace contains 3 deployments (`{k} get deploy -n monorepo-nmspc`)
+* `app-ingress` namespace contains 3 deployments (`{k} get deploy -n monorepo-nmspc`)
+
+. Add `127.0.0.1   foo.bar` to /etc/hosts (*nix systems)
+
+. cURL2 the endpoints
+
+ curl "http://foo.bar/home"
+ curl "http://foo.bar/settings"
+ curl "http://foo.bar/user"
+
+Validate each one returns the respective "Welcome to the .... page" content.
