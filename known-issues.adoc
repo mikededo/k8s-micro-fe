@@ -1,0 +1,15 @@
+= Known issues
+
+== nginx-ingress installation fails
+
+Sometimes fails, destroy cluster and re-install with `skaffodl dev`.
+
+== skaffold false warnings
+
+Messages like the one below can be ignored, do not apply.
+
+```
+WARN[0009] image [app-home:....] is not used.  subtask=-1 task=DevLoop
+WARN[0009] image [app-settings:...] is not used.  subtask=-1 task=DevLoop
+WARN[0009] image [app-user:...] is not used.  subtask=-1 task=DevLoop
+```

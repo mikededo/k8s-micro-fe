@@ -1,13 +1,15 @@
+##########################################
+# Add `127.0.0.1   foo.bar` to /etc/hosts
+##########################################
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: app-ingress
   annotations:
-#    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/ssl-passthrough: 'true'
+    kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-passthrough: 'true'
 spec:
-  ingressClassName: nginx
   rules:
     - host: foo.bar
       http:
